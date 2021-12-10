@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "898089829188",
+    "firebase_url": "https://mandycortisconnectedgaming-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "mandycortisconnectedgaming",
+    "storage_bucket": "mandycortisconnectedgaming.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:898089829188:android:72aafb47d5817d0ebccd11",
+        "android_client_info": {
+          "package_name": "com.MandyCortis.CG"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "898089829188-ucorv9hofrvg27bt7eqjiv032qq6bhfv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC2YLN71aas8a514xnnVyyzWAlysDTPwEo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "898089829188-ucorv9hofrvg27bt7eqjiv032qq6bhfv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
