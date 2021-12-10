@@ -23,8 +23,8 @@ public class FirebaseDLCManager : MonoBehaviour
 
         for (int i = 0; i < 2; i++)
         {
-            StorageReference side1Image = storageRef.Child("DLC").Child(photoToDownload[i]);
-            DownloadDLC(side1Image);
+            StorageReference image = storageRef.Child("DLC").Child(photoToDownload[i]);
+            DownloadDLC(image);
         }
     }
 

@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
 public class GameManager : MonoBehaviour
 {
     [SerializeField] private TMPro.TMP_InputField playerNameInput;
@@ -10,6 +9,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TMPro.TMP_InputField uniqueCodeInput;
     [SerializeField] private TMPro.TMP_Text player1Name;
     [SerializeField] private TMPro.TMP_Text player2Name;
+
 
     private void Awake()
     {
@@ -28,28 +28,30 @@ public class GameManager : MonoBehaviour
                 break;
         }
     }
-
     public static void NextScene(string SceneName)
-    {
-        SceneManager.LoadScene(SceneName);
+    { 
+       if (!string.IsNullOrEmpty(FirebaseController._player1) && !string.IsNullOrEmpty(FirebaseController._player2))
+       {
+            SceneManager.LoadScene(SceneName);
+       }
     }
 
     //Welcome Scene
-    public void CreateGame()
-    {
-        if (playerNameInput.text != "")
-        {
+    public void CreateGame(){
+        if (playerNameInput.text != ""){
             StartCoroutine(FirebaseController.CreateGame(playerNameInput.text));
         }
     }
 
     //Join Scene
-    public void JoinGameLobby()
+   public void JoinGameLobby()
     {
-        StartCoroutine(FirebaseController.KeyExists(uniqueCodeInput.text));
+        if (uniqueCodeInput.text != "")
+        {
+            StartCoroutine(FirebaseController.KeyExists(uniqueCodeInput.text));
+        }
     }
-
-
+    
     //Welcome Scene
     public void JoinGame()
     {
@@ -59,4 +61,5 @@ public class GameManager : MonoBehaviour
             NextScene("Join");
         }
     }
+
 }
