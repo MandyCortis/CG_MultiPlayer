@@ -1,7 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using Firebase.Storage;
 using Firebase.Extensions;
 
@@ -52,7 +50,9 @@ public class FirebaseDLCManager : MonoBehaviour
 
                 //Create Sprite
                 Sprite mySprite = Sprite.Create(tex, new Rect(0.0f, 0.0f, tex.width, tex.height), new Vector2(0.5f, 0.5f), 100.0f);
+                Sprite mySprite2 = Sprite.Create(tex, new Rect(0.0f, 0.0f, tex.width, tex.height), new Vector2(0.5f, 0.5f), 100.0f);
                 GetComponent<SpriteRenderer>().sprite = mySprite;
+
             }
         });
     }

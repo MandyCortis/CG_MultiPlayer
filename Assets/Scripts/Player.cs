@@ -6,7 +6,7 @@ public class Player : MonoBehaviour
 {
     void HandleMovement()
     {
-        if(isLocalPlayer)
+        //if(isLocalPlayer)
         {
             float moveHorizontal = Input.GetAxis("Horizontal");
             float moveVertical = Input.GetAxis("Vertical");

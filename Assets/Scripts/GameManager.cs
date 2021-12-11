@@ -9,6 +9,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TMPro.TMP_InputField uniqueCodeInput;
     [SerializeField] private TMPro.TMP_Text player1Name;
     [SerializeField] private TMPro.TMP_Text player2Name;
+    public string player2;
+    public string position;
+    public string datetime;
 
 
     private void Awake()
@@ -21,6 +24,7 @@ public class GameManager : MonoBehaviour
                 uniqueCodeOutput.text = FirebaseController._key;
                 player1Name.text = "Player 1: " + FirebaseController._player1;
                 player2Name.text = "Player 2: " + FirebaseController._player2;
+
                 break;
             case "Join":
                 break;
@@ -39,7 +43,7 @@ public class GameManager : MonoBehaviour
     //Welcome Scene
     public void CreateGame(){
         if (playerNameInput.text != ""){
-            StartCoroutine(FirebaseController.CreateGame(playerNameInput.text));
+            StartCoroutine(FirebaseController.CreateGame(playerNameInput.text, player2, position, datetime));
         }
     }
 
@@ -60,6 +64,11 @@ public class GameManager : MonoBehaviour
             FirebaseController._player2 = playerNameInput.text;
             NextScene("Join");
         }
+    }
+
+    private void Update()
+    {
+
     }
 
 }

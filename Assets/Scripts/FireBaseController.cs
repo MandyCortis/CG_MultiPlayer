@@ -16,9 +16,11 @@ public class LobbyInstance{
 
 
 
-    public LobbyInstance(string player1, string player2){
+    public LobbyInstance(string player1, string player2, string position, string datetime){
         this._player1 = player1;
         this._player2 = player2;
+        this._position = position;
+        this._datetime = datetime;
     }
 }
 
@@ -36,7 +38,6 @@ public class FirebaseController : MonoBehaviour
         DontDestroyOnLoad(this.gameObject);
         _dbRef = FirebaseDatabase.DefaultInstance.RootReference;
     }
-
 
     //When a player joins the lobby, we should know
     public static void HandleValueChanged(object sender, ValueChangedEventArgs args)
@@ -61,28 +62,33 @@ public class FirebaseController : MonoBehaviour
     }
 
 
-public static IEnumerator CreateGame(string player1){
-
-    _player1 = player1;
-    LobbyInstance lobby = new LobbyInstance(player1, "");
-    _key = _dbRef.Child("Games").Push().Key;
-
-    yield return _dbRef.Child("Games").Child(_key).SetRawJsonValueAsync(JsonUtility.ToJson(lobby));
-        //Listen to any changes in this lobby
-        _dbRef.Child("Games").Child(_key).ValueChanged += HandleValueChanged;
-        GameManager.NextScene("Lobby");
-    }
-
-    public static void AddToLobby(string player1, string player2, string key)
+    public static IEnumerator CreateGame(string player1, string player2, string position, string datetime)
     {
-        LobbyInstance lobby = new LobbyInstance(player1, player2);
-        _dbRef.Child("Games").Child(key).SetRawJsonValueAsync(JsonUtility.ToJson(lobby));
-        //GameManager.NextScene("Lobby");
-    }
+
+        _player1 = player1;
+        _player2 = player2;
+        _position = position;
+        _datetime = datetime;
+
+        LobbyInstance lobby = new LobbyInstance(player1, player2, position, datetime);
+        _key = _dbRef.Child("Objects").Push().Key;
+
+        yield return _dbRef.Child("Objects").Child(_key).SetRawJsonValueAsync(JsonUtility.ToJson(lobby));
+            //Listen to any changes in this lobby
+            _dbRef.Child("Objects").Child(_key).ValueChanged += HandleValueChanged;
+            GameManager.NextScene("Lobby");
+     }
+
+     public static void AddToLobby(string player1, string player2, string position, string datetime, string key)
+     {
+         LobbyInstance lobby = new LobbyInstance(player1, player2, position, datetime);
+         _dbRef.Child("Objects").Child(key).SetRawJsonValueAsync(JsonUtility.ToJson(lobby));
+         //GameManager.NextScene("Lobby");
+     }
 
     public static IEnumerator KeyExists(String key)
     {
-        yield return _dbRef.Child("Games").Child(key).GetValueAsync().ContinueWith(task =>
+        yield return _dbRef.Child("Objects").Child(key).GetValueAsync().ContinueWith(task =>
         {
             if (task.IsCompleted)
             {
@@ -99,10 +105,9 @@ public static IEnumerator CreateGame(string player1){
                             _player1 = child.Value.ToString();
                         }
                     }
-                    AddToLobby(_player1, _player2,key);
+                    AddToLobby(_player1, _player2, _position, _datetime, key);
                 }
             }
         });
     }
-
 }
