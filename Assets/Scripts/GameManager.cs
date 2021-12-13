@@ -2,16 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+
 public class GameManager : MonoBehaviour
 {
     [SerializeField] private TMPro.TMP_InputField playerNameInput;
     [SerializeField] private TMPro.TMP_InputField uniqueCodeOutput;
     [SerializeField] private TMPro.TMP_InputField uniqueCodeInput;
     [SerializeField] private TMPro.TMP_Text player1Name;
-    [SerializeField] private TMPro.TMP_Text player2Name;
-    public string player2;
-    public string position;
-    public string datetime;
+    [SerializeField] public TMPro.TMP_Text player2Name;
 
 
     private void Awake()
@@ -24,7 +22,6 @@ public class GameManager : MonoBehaviour
                 uniqueCodeOutput.text = FirebaseController._key;
                 player1Name.text = "Player 1: " + FirebaseController._player1;
                 player2Name.text = "Player 2: " + FirebaseController._player2;
-
                 break;
             case "Join":
                 break;
@@ -33,29 +30,41 @@ public class GameManager : MonoBehaviour
         }
     }
     public static void NextScene(string SceneName)
-    { 
-       if (!string.IsNullOrEmpty(FirebaseController._player1) && !string.IsNullOrEmpty(FirebaseController._player2))
-       {
-            SceneManager.LoadScene(SceneName);
-       }
+    {
+        SceneManager.LoadScene(SceneName);
+    }
+
+    public static void StartGame()
+    {
+        if (FirebaseController._player2 == "")
+        {
+            Debug.Log("No other players in the lobby");
+        }
+        else
+        {
+            NextScene("Main");
+        }
     }
 
     //Welcome Scene
-    public void CreateGame(){
-        if (playerNameInput.text != ""){
-            StartCoroutine(FirebaseController.CreateGame(playerNameInput.text, player2, position, datetime));
+    public void CreateGame()
+    {
+        if (playerNameInput.text != "")
+        {
+            StartCoroutine(FirebaseController.CreateGame(playerNameInput.text));
+            player2Name.text = "Player 2: " + FirebaseController._player2;
         }
     }
 
     //Join Scene
-   public void JoinGameLobby()
+    public void JoinGameLobby()
     {
         if (uniqueCodeInput.text != "")
         {
             StartCoroutine(FirebaseController.KeyExists(uniqueCodeInput.text));
         }
     }
-    
+
     //Welcome Scene
     public void JoinGame()
     {
@@ -64,11 +73,6 @@ public class GameManager : MonoBehaviour
             FirebaseController._player2 = playerNameInput.text;
             NextScene("Join");
         }
-    }
-
-    private void Update()
-    {
-
     }
 
 }

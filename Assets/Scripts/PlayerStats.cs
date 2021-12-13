@@ -7,6 +7,8 @@ public class PlayerStats : MonoBehaviour
     public GameObject p1;
     public GameObject p2;
 
+    private bool isKeysEnabled;
+
     public int p1Moves = 0;
     public int p2Moves = 0;
 
@@ -19,17 +21,21 @@ public class PlayerStats : MonoBehaviour
     public GameObject panel;
     public Text pWin;
 
+    public static Vector2 pos;
+
     void Start()
     {
         panel = GameObject.Find("Panel");
         panel.SetActive(false);
         pWin.gameObject.SetActive(false);
+        pos = transform.position;
     }
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
+            isKeysEnabled = true;
             p1.transform.position += new Vector3(0, 1f, 0);
             p1Moves++;
             Debug.Log("Player 1 Moved Up");
@@ -37,6 +43,7 @@ public class PlayerStats : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.DownArrow))
         {
+            isKeysEnabled = true;
             p1.transform.position += new Vector3(0, -1f, 0);
             p1Moves++;
             Debug.Log("Player 1 Moved Down");
@@ -44,6 +51,7 @@ public class PlayerStats : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.W))
         {
+            isKeysEnabled = true;
             p2.transform.position += new Vector3(0, 1f, 0);
             p2Moves++;
             Debug.Log("Player 2 Moved Up");
@@ -51,6 +59,7 @@ public class PlayerStats : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.S))
         {
+            isKeysEnabled = true;
             p2.transform.position += new Vector3(0, -1f, 0);
             p2Moves++;
             Debug.Log("Player 2 Moved Down");
@@ -78,14 +87,14 @@ public class PlayerStats : MonoBehaviour
     {
         if (p1Score == 10)
         {
-            //SceneManager.LoadScene("Win");
+            isKeysEnabled = false;
             panel.SetActive(true);
             pWin.gameObject.SetActive(true);
             pWin.text = "CONGRATULATIONS PLAYER 1, You WIN!";
         }
         else if (p2Score == 10)
         {
-            //SceneManager.LoadScene("Win");
+            isKeysEnabled = false;
             panel.SetActive(true);
             pWin.gameObject.SetActive(true);
             pWin.text = "CONGRATULATIONS PLAYER 2, You WIN!";
