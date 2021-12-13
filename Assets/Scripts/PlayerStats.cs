@@ -28,6 +28,12 @@ public class PlayerStats : MonoBehaviour
         panel = GameObject.Find("Panel");
         panel.SetActive(false);
         pWin.gameObject.SetActive(false);
+
+        GameObject canvas = GameObject.Find("Canvas");
+        p1 = canvas.transform.GetChild(0).gameObject;
+        p2 = canvas.transform.GetChild(1).gameObject;
+
+        Debug.Log(p1.transform.position);
     }
 
     void Update()

@@ -51,14 +51,17 @@ public class FirebaseController : MonoBehaviour
     public static string _p2key = "";
     public static string _player1 = "";
     public static string _player2 = "";
+    public static float _InstancePosX;
+    public static float _InstancePosY;
 
     public static string InstPos;
-    //public static string DateT = "";
     public static string objectId;
     public static string InstId;
     public static string ShapeName;
 
     private static bool plr1 = false;
+
+    PlayerStats ps = new PlayerStats();
 
     private void Start()
     {
@@ -138,34 +141,6 @@ public class FirebaseController : MonoBehaviour
     }
 
 
-
-
-    /*
-        public static IEnumerator saveInst(string instName, string instT, string uniqueId, string instPos)
-        {
-            Vector2 pos = PlayerStats.pos;
-            instPos = pos.ToString();
-            //string dt = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-
-            ///instT = dt;
-            uniqueId = _dbRef.Child("Objects").Push().Key;
-
-            if (plr1 == true)
-            {
-                instName = "Square";
-            }
-            else
-            {
-                instName = "Circle";
-            }
-
-            //ObjectInstanceCreate obj = new ObjectInstanceCreate(instName, instT, uniqueId, instPos, "square");
-            string json = JsonUtility.ToJson(obj);
-
-            yield return _dbRef.Child("Objects").Child(uniqueId).SetRawJsonValueAsync(JsonUtility.ToJson(obj));
-        }
-    */
-
     public static IEnumerator CreateGame(string player1)
     {
         _key = _dbRef.Child("Players").Push().Key;
@@ -184,10 +159,19 @@ public class FirebaseController : MonoBehaviour
     public static void AddToLobby(string player1, string player2, string key)
     {
         _p2key = _dbRef.Child("Players").Child(key).Push().Key;
-        ObjectInstanceCreate obj = new ObjectInstanceCreate(player2, DateTime.Now.ToString(), _p2key, 0f, 0f, "circle");
+        ObjectInstanceCreate obj = new ObjectInstanceCreate(player2, DateTime.Now.ToString(), _p2key, _InstancePosX, 0f, "circle");
 
         _dbRef.Child("Players").Child(key).Child("_player2").SetRawJsonValueAsync(JsonUtility.ToJson(obj));
+        _dbRef.Child("Players").Child(key).Child("_player2").Child("_InstancePosX").SetRawJsonValueAsync(JsonUtility.ToJson(obj));
         SceneManager.LoadScene("Lobby");
+    }
+
+    public void UpdatePos(Vector2 p1Pos)
+    {
+        p1Pos = ps.p1.transform.position;
+
+        _InstancePosX = p1Pos.x;
+        _InstancePosY = p1Pos.y;
     }
 
     //
