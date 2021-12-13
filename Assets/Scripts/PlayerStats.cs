@@ -23,6 +23,7 @@ public class PlayerStats : MonoBehaviour
 
     public Vector2 pos;
 
+
     void Start()
     {
         panel = GameObject.Find("Panel");
