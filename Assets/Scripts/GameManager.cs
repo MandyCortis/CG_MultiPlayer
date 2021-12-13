@@ -9,7 +9,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TMPro.TMP_InputField uniqueCodeOutput;
     [SerializeField] private TMPro.TMP_InputField uniqueCodeInput;
     [SerializeField] private TMPro.TMP_Text player1Name;
-    [SerializeField] public TMPro.TMP_Text player2Name;
+    [SerializeField] private TMPro.TMP_Text player2Name;
 
 
     private void Awake()
@@ -61,7 +61,8 @@ public class GameManager : MonoBehaviour
     {
         if (uniqueCodeInput.text != "")
         {
-            StartCoroutine(FirebaseController.KeyExists(uniqueCodeInput.text));
+            StartCoroutine(FirebaseController.playerCheck(uniqueCodeInput.text));
+            NextScene("Lobby");
         }
     }
 
@@ -75,4 +76,13 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    void Update()
+    {
+        if(SceneManager.GetActiveScene().name == "Lobby")
+        {
+            player1Name.text = "Player 1: " + FirebaseController._player1;
+            player2Name.text = "Player 2: " + FirebaseController._player2;
+        }
+
+    }
 }

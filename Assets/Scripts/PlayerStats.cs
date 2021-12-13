@@ -21,14 +21,13 @@ public class PlayerStats : MonoBehaviour
     public GameObject panel;
     public Text pWin;
 
-    public static Vector2 pos;
+    public Vector2 pos;
 
     void Start()
     {
         panel = GameObject.Find("Panel");
         panel.SetActive(false);
         pWin.gameObject.SetActive(false);
-        pos = transform.position;
     }
 
     void Update()

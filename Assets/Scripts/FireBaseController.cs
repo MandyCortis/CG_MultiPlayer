@@ -10,43 +10,51 @@ using Firebase.Extensions;
 public class LobbyInstance
 {
 
-    public string _player1;
-    public string _player2;
-    public LobbyInstance(string player1, string player2)
+    public ObjectInstanceCreate _player1;
+    public ObjectInstanceCreate _player2;
+    public LobbyInstance(ObjectInstanceCreate player1, ObjectInstanceCreate player2)
     {
         this._player1 = player1;
         this._player2 = player2;
     }
 }
 
+[Serializable]
 public class ObjectInstanceCreate
 {
-    public string _InstanceNameP1;
-    public string _InstanceNameP2;
-    public string _Position;
-    public string _DateTime;
-    public string _Id;
+    public string _InstanceName;
+    public float _InstancePosX;
+    public float _InstancePosY;
+    public string _InstanceTime;
+    public string _UniqueId;
+    public string _InstanceShape;
 
 
-    public ObjectInstanceCreate(string InstanceNameP1, string Position, string DateTime, string Id)
+    public ObjectInstanceCreate(string InstanceName, string InstanceTime, string UniqueId, float InstancePosX, float InstancePosY, string shape)
     {
-        this._InstanceNameP1 = InstanceNameP1;
-        this._Position = Position;
-        this._DateTime = DateTime;
-        this._Id = Id;
+        this._InstanceName = InstanceName;
+        this._InstancePosX = InstancePosX;
+        this._InstancePosY = InstancePosY;
+        this._InstanceTime = InstanceTime;
+        this._UniqueId = UniqueId;
+        this._InstanceShape = shape;
     }
 }
+
 
 public class FirebaseController : MonoBehaviour
 {
     private static DatabaseReference _dbRef;
+
     public static string _key = "";
+    public static string _p1key = "";
+    public static string _p2key = "";
     public static string _player1 = "";
     public static string _player2 = "";
 
     public static string InstPos;
-    public static string DateT = "";
-    public static string ObjId;
+    //public static string DateT = "";
+    public static string objectId;
     public static string InstId;
     public static string ShapeName;
 
@@ -56,6 +64,8 @@ public class FirebaseController : MonoBehaviour
     {
         DontDestroyOnLoad(this.gameObject);
         _dbRef = FirebaseDatabase.DefaultInstance.RootReference;
+
+        //FirebaseDatabase.DefaultInstance.GetReference("DateT").ValueChanged += saveInst();
     }
 
 
@@ -70,97 +80,128 @@ public class FirebaseController : MonoBehaviour
         else
         {
             Debug.Log("Someone joined the lobby");
-            foreach (var child in args.Snapshot.Children)
+            _dbRef.Child("Players").Child(_key).Child("_player2").GetValueAsync().ContinueWithOnMainThread(task =>
             {
-                if (child.Key == "_player2")
+                if (task.IsCompleted)
                 {
-                    _player2 = child.Value.ToString();
+                    DataSnapshot snapshot = task.Result;
+                    if (snapshot.Value != null)
+                    {
+                        //Optimise
+                        foreach (var child in snapshot.Children)
+                        {
+                            if (child.Key == "_InstanceName")
+                            {
+                                _player2 = child.Value.ToString();
+                            }
+                        }
+                    }
                 }
-            }
+            });
             Debug.Log(_player2 + " has joined the lobby");
+            //_dbRef.Child("Players").Child(_key).ValueChanged -= HandleValueChanged;
         }
     }
 
-    public static IEnumerator waitForLoad()
+
+    public static void HandleMovement(object sender, ValueChangedEventArgs args)
     {
-        Debug.Log("waited");
-        yield return new WaitForSeconds(1f);
-    }
-
-
-    public static IEnumerator saveInst(string instName, string instPos, string instT, string ID)
-    {
-        Vector2 pos = PlayerStats.pos;
-        instPos = pos.ToString();
-        string dt = DateTime.Now.ToString("yyyy/MM/dd hh:mm:ss");
-
-        instT = dt;
-        ID = _dbRef.Child("Objects").Push().Key;
-
-        if (plr1 == true)
+        if (args.DatabaseError != null)
         {
-            instName = "Square";
+            Debug.LogError(args.DatabaseError.Message);
+            return;
         }
         else
         {
-            instName = "Circle";
+            Debug.Log("2 moving");
+            _dbRef.Child("Players").Child(_key).Child("_player2").GetValueAsync().ContinueWithOnMainThread(task =>
+            {
+                if (task.IsCompleted)
+                {
+                    DataSnapshot snapshot = task.Result;
+                    if (snapshot.Value != null)
+                    {
+                        //Optimise
+                        foreach (var child in snapshot.Children)
+                        {
+                            if (child.Key == "_InstancePosY")
+                            {
+                                _player2 = child.Value.ToString();
+                            }
+                        }
+                    }
+                }
+            });
+            Debug.Log(_player2 + " has moved");
+            //_dbRef.Child("Players").Child(_key).ValueChanged -= HandleValueChanged;
         }
-
-        ObjectInstanceCreate obj = new ObjectInstanceCreate(instName, instPos, instT, ID);
-        string json = JsonUtility.ToJson(obj);
-
-        yield return _dbRef.Child("Objects").Child(ID).SetRawJsonValueAsync(JsonUtility.ToJson(obj));
     }
+
+
+
+
+    /*
+        public static IEnumerator saveInst(string instName, string instT, string uniqueId, string instPos)
+        {
+            Vector2 pos = PlayerStats.pos;
+            instPos = pos.ToString();
+            //string dt = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+
+            ///instT = dt;
+            uniqueId = _dbRef.Child("Objects").Push().Key;
+
+            if (plr1 == true)
+            {
+                instName = "Square";
+            }
+            else
+            {
+                instName = "Circle";
+            }
+
+            //ObjectInstanceCreate obj = new ObjectInstanceCreate(instName, instT, uniqueId, instPos, "square");
+            string json = JsonUtility.ToJson(obj);
+
+            yield return _dbRef.Child("Objects").Child(uniqueId).SetRawJsonValueAsync(JsonUtility.ToJson(obj));
+        }
+    */
 
     public static IEnumerator CreateGame(string player1)
     {
-
-        _player1 = player1;
-        LobbyInstance lobby = new LobbyInstance(player1, "");
         _key = _dbRef.Child("Players").Push().Key;
+        _player1 = player1;
+        _p1key = _dbRef.Child("Players").Child(_key).Push().Key;
+        ObjectInstanceCreate obj = new ObjectInstanceCreate(player1, DateTime.Now.ToString(), _p1key, 0f, 0f, "square");
+        LobbyInstance lobby = new LobbyInstance(obj, null);
+
 
         yield return _dbRef.Child("Players").Child(_key).SetRawJsonValueAsync(JsonUtility.ToJson(lobby));
         //Listen to any changes in this lobby
         _dbRef.Child("Players").Child(_key).ValueChanged += HandleValueChanged;
-        GameManager.NextScene("Lobby");
+        SceneManager.LoadScene("Lobby");
     }
 
     public static void AddToLobby(string player1, string player2, string key)
     {
-        LobbyInstance lobby = new LobbyInstance(player1, player2);
-        _dbRef.Child("Players").Child(key).SetRawJsonValueAsync(JsonUtility.ToJson(lobby));
+        _p2key = _dbRef.Child("Players").Child(key).Push().Key;
+        ObjectInstanceCreate obj = new ObjectInstanceCreate(player2, DateTime.Now.ToString(), _p2key, 0f, 0f, "circle");
+
+        _dbRef.Child("Players").Child(key).Child("_player2").SetRawJsonValueAsync(JsonUtility.ToJson(obj));
         SceneManager.LoadScene("Lobby");
-
     }
 
-    public static IEnumerator KeyExists(String key)
+    //
+    public static void CheckMovement(string player2)
     {
-        yield return _dbRef.Child("Players").Child(key).GetValueAsync().ContinueWithOnMainThread(task =>
-        {
-            if (task.IsCompleted)
-            {
-                DataSnapshot snapshot = task.Result;
-                if (snapshot.Value != null)
-                {
-                    Debug.Log("Correct Key");
+        _dbRef.Child("Players").Child(_key).SetRawJsonValueAsync(JsonUtility.ToJson(player2));
+        _dbRef.Child("Players").Child(_key).ValueChanged += HandleMovement;
 
-                    //Optimise
-                    foreach (var child in snapshot.Children)
-                    {
-                        if (child.Key == "_player1")
-                        {
-                            _player1 = child.Value.ToString();
-                        }
-                    }
-                    AddToLobby(_player1, _player2, key);
-                }
-            }
-        });
     }
+    //
 
     public static IEnumerator playerCheck(string key)
     {
-        yield return _dbRef.Child("Matches").Child(key).GetValueAsync().ContinueWith(task =>
+        yield return _dbRef.Child("Players").Child(key).Child("_player1").GetValueAsync().ContinueWith(task =>
         {
             if (task.IsCompleted)
             {
@@ -172,7 +213,10 @@ public class FirebaseController : MonoBehaviour
                     //Optimise
                     foreach (var child in snapshot.Children)
                     {
-                        Debug.Log(child.Key);
+                        if (child.Key == "_InstanceName")
+                        {
+                            _player1 = child.Value.ToString();
+                        }
                     }
                     AddToLobby(_player1, _player2, key);
                 }
