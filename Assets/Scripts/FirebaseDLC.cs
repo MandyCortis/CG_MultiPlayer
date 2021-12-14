@@ -52,6 +52,5 @@ public class FirebaseDLC : MonoBehaviour
                 GetComponent<SpriteRenderer>().sprite = square;
             }
         });
-
     }
 }

@@ -33,8 +33,6 @@ public class PlayerStats : MonoBehaviour
         GameObject canvas = GameObject.Find("Canvas");
         p1 = canvas.transform.GetChild(0).gameObject;
         p2 = canvas.transform.GetChild(1).gameObject;
-
-        Debug.Log(p1.transform.position);
     }
 
     void Update()
@@ -75,6 +73,7 @@ public class PlayerStats : MonoBehaviour
         {
             p1Score += 1;
             p1Moves = 0;
+            //FirebaseController.CheckMovement("Player 1");
         }
         p1Text.GetComponent<TMPro.TextMeshProUGUI>().text = "P1: " + p1Score.ToString();
         
@@ -83,6 +82,7 @@ public class PlayerStats : MonoBehaviour
         {
             p2Score += 1;
             p2Moves = 0;
+            //FirebaseController.CheckMovement("Player 2");
         }
         p2Text.GetComponent<TMPro.TextMeshProUGUI>().text = "P2: " + p2Score.ToString();
         

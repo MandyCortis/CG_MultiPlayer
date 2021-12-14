@@ -54,12 +54,6 @@ public class FirebaseController : MonoBehaviour
     public static float _InstancePosX;
     public static float _InstancePosY;
 
-    public static string InstPos;
-    public static string objectId;
-    public static string InstId;
-    public static string ShapeName;
-
-    private static bool plr1 = false;
 
     PlayerStats ps = new PlayerStats();
 

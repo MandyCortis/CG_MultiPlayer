@@ -11,7 +11,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TMPro.TMP_Text player1Name;
     [SerializeField] private TMPro.TMP_Text player2Name;
 
-
     private void Awake()
     {
         switch (SceneManager.GetActiveScene().name)
@@ -83,6 +82,5 @@ public class GameManager : MonoBehaviour
             player1Name.text = "Player 1: " + FirebaseController._player1;
             player2Name.text = "Player 2: " + FirebaseController._player2;
         }
-
     }
 }
