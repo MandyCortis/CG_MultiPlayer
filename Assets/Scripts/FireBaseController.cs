@@ -153,10 +153,9 @@ public class FirebaseController : MonoBehaviour
     public static void AddToLobby(string player1, string player2, string key)
     {
         _p2key = _dbRef.Child("Players").Child(key).Push().Key;
-        ObjectInstanceCreate obj = new ObjectInstanceCreate(player2, DateTime.Now.ToString(), _p2key, _InstancePosX, 0f, "circle");
+        ObjectInstanceCreate obj = new ObjectInstanceCreate(player2, DateTime.Now.ToString(), _p2key, 0f, 0f, "circle");
 
         _dbRef.Child("Players").Child(key).Child("_player2").SetRawJsonValueAsync(JsonUtility.ToJson(obj));
-        _dbRef.Child("Players").Child(key).Child("_player2").Child("_InstancePosX").SetRawJsonValueAsync(JsonUtility.ToJson(obj));
         SceneManager.LoadScene("Lobby");
     }
 

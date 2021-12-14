@@ -20,6 +20,8 @@ public class PlayerStats : MonoBehaviour
 
     public GameObject panel;
     public Text pWin;
+    public Button rematch;
+    public Button exit;
 
     public Vector2 pos;
 
@@ -28,7 +30,6 @@ public class PlayerStats : MonoBehaviour
     {
         panel = GameObject.Find("Panel");
         panel.SetActive(false);
-        pWin.gameObject.SetActive(false);
 
         GameObject canvas = GameObject.Find("Canvas");
         p1 = canvas.transform.GetChild(0).gameObject;
@@ -69,7 +70,7 @@ public class PlayerStats : MonoBehaviour
             Debug.Log("Player 2 Moved Down");
         }
 
-        if (p1Moves == 1)
+        if (p1Moves == 10)
         {
             p1Score += 1;
             p1Moves = 0;
@@ -78,7 +79,7 @@ public class PlayerStats : MonoBehaviour
         p1Text.GetComponent<TMPro.TextMeshProUGUI>().text = "P1: " + p1Score.ToString();
         
 
-        if (p2Moves == 1)
+        if (p2Moves == 10)
         {
             p2Score += 1;
             p2Moves = 0;
@@ -95,14 +96,12 @@ public class PlayerStats : MonoBehaviour
         {
             isKeysEnabled = false;
             panel.SetActive(true);
-            pWin.gameObject.SetActive(true);
             pWin.text = "CONGRATULATIONS PLAYER 1, You WIN!";
         }
         else if (p2Score == 10)
         {
             isKeysEnabled = false;
             panel.SetActive(true);
-            pWin.gameObject.SetActive(true);
             pWin.text = "CONGRATULATIONS PLAYER 2, You WIN!";
         }
     }
